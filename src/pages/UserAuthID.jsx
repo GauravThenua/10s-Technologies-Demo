@@ -33,7 +33,7 @@ const UserAuthID = () => {
               <div className="flex items-center justify-between">
                 <label className="font-medium text-gray-700">Expiry</label>
                 <div className="border px-3 py-1 rounded-md w-32 text-center bg-gray-50">
-                  {show ? getFormattedExpiry(data.expiry) + ' (8 days)' : '●●●●●'}
+                  {show ? getFormattedExpiry(data.expiry)  : '●●●●●'}
                 </div>
               </div>
 
