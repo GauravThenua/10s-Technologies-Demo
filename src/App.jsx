@@ -7,6 +7,7 @@ import RelyingParty1 from "./pages/RelyingParty1";
 import RelyingParty2 from "./pages/RelyingParty2";
 import AdminPortal from "./pages/AdminPortal";
 import MITMScenario from "./pages/MITMScenario";
+import DemoSelector from "./pages/DemoSelector";
 
 function App() {
   return (
@@ -20,11 +21,21 @@ function App() {
       <main className="flex justify-center px-2 py-4">
         <div className="w-full max-w-xs bg-white rounded-md shadow px-3 py-4">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<UserRegistration />} />
-            <Route path="/auth-id" element={<UserAuthID />} />
-            <Route path="/rp1" element={<RelyingParty1 />} />
-            <Route path="/rp2" element={<RelyingParty2 />} />
+            <Route path="/" element={<DemoSelector />} />
+
+            <Route path="/basic" element={<Home />} />
+            <Route path="/basic/register" element={<UserRegistration />} />
+            <Route path="/basic/auth-id" element={<UserAuthID />} />
+            <Route path="/basic/rp1" element={<RelyingParty1 />} />
+            <Route path="/basic/rp2" element={<RelyingParty2 />} />
+            {/* <Route path="/admin" element={<AdminPortal />} /> */}
+            {/* <Route path="/mitm" element={<MITMScenario />} /> */}
+
+            <Route path="/advanced" element={<Home />} />
+            <Route path="/advanced/register" element={<UserRegistration />} />
+            <Route path="/advanced/auth-id" element={<UserAuthID />} />
+            <Route path="/advanced/rp1" element={<RelyingParty1 />} />
+            <Route path="/advanced/rp2" element={<RelyingParty2 />} />
             {/* <Route path="/admin" element={<AdminPortal />} /> */}
             {/* <Route path="/mitm" element={<MITMScenario />} /> */}
           </Routes>
