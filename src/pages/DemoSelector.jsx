@@ -5,8 +5,8 @@ export default function DemoSelector() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8 bg-white rounded-xl shadow-lg border border-gray-200">
-      <h1 className="text-2xl font-bold text-[#1b1b1b] mb-6 text-center">
-        Choose Demo Type
+      <h1 className="text-xl font-bold text-[#1b1b1b] mb-6 text-center">
+        Dynamic Partial ID Demo
       </h1>
       <div className="space-y-4">
         <button

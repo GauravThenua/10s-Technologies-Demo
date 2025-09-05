@@ -14,14 +14,17 @@ export default function Home() {
   if (isAdvanced) {
     links.push(
       { to: `${pathname}/admin`, label: "IDP Admin Portal" },
-      { to: `${pathname}/mitm`, label: "Bad Guy Scenario – MITM" } // Uncomment if used
+      { to: `${pathname}/DBsearch`, label: "IDP DB Search" },
+      { to: `${pathname}/mitm`, label: "Bad Guy Scenario – MITM" }
     );
   }
 
   return (
     <div className=" bg-[#fbfbfc] px-4 py-8 flex flex-col items-center">
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#050719] mb-8 text-center max-w-md">
-        Identity Demo Portal ({isAdvanced ? "Advanced" : "Basic"})
+      <h1 className="text-xl sm:text-xl md:text-2xl font-extrabold text-[#050719] mb-8 text-center max-w-md">
+        {isAdvanced
+          ? "Advanced Demo - Dynamic 'Partial' ID"
+          : "Basic Demo - Dynamic ID"}
       </h1>
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-4xl w-full">
