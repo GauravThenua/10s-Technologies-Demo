@@ -1,27 +1,27 @@
-# 🚀 React + Vite + Tailwind CSS Project
+#  React + Vite + Tailwind CSS Project
 
 This is a simple React project bootstrapped with **Vite** and styled using **Tailwind CSS**.  
 Vite provides an extremely fast development environment with Hot Module Replacement (HMR), while Tailwind CSS gives you a utility-first approach to building modern UIs.
 
 ---
 
-## 📦 Installation & Setup
+##  Installation & Setup
 
 Follow these steps to run the project locally:
 
-### 1️⃣ Clone the Repository
+### 1 Clone the Repository
 
 git clone https://github.com/GauravThenua/10s-Technologies-Demo.git
 cd 10s-Technologies-Demo
 
-### 2️⃣ Install Dependencies
+### 2 Install Dependencies
 npm install
 
-### 3️⃣ Run Development Server
+### 3 Run Development Server
 npm run dev
 
 
 👉 App will be available at: http://localhost:5173
 
-### 4️⃣ Build for Production
+### 4 Build for Production
 npm run build
