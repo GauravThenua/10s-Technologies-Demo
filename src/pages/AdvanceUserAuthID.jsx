@@ -24,7 +24,7 @@ const AdvanceUserAuthID = () => {
   const b2TimeoutRef = useRef(null);
 
   useEffect(() => {
-    document.title = "User Auth ID";
+    document.title = "User ID Card";
   }, []);
 
   const getFormattedExpiry = (expiry) => {
@@ -100,7 +100,7 @@ const AdvanceUserAuthID = () => {
   <div className="flex items-center justify-center bg-gray-50 px-0 py-13 min-h-[60vh] relative">
     <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm">
       <h2 className="text-xl font-bold text-center mb-5 text-[#050719]">
-        User Auth ID
+        User ID Card
       </h2>
 
       <div className="border border-[#dee6ea] rounded-sm p-8 bg-gray-50 relative">

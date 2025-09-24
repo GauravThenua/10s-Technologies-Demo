@@ -62,7 +62,7 @@ function App() {
       {/* Footer */}
       <footer className="text-center text-xs text-gray-400 py-6">
         © {new Date().getFullYear()}{" "}
-        <span className="text-[#fc844c] font-semibold">10S Technologies Ltd. All rights reserved.</span>
+        <span className="text-[#fc844c] font-semibold">10S Technologies Ltd. All rights reserved.</span>
       </footer>
     </div>
   );

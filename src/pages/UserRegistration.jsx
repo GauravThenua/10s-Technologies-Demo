@@ -1,12 +1,15 @@
+
 import React, { useEffect, useState } from 'react';
 
 const UserRegistration = () => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
-  const [users, setUsers] = useState(JSON.parse(localStorage.getItem('users')) || []);
+  const [users, setUsers] = useState(
+    JSON.parse(localStorage.getItem('users')) || []
+  );
 
   useEffect(() => {
-    document.title = "End User Registration";
+    document.title = "Basic User Registration";
   }, []);
 
   const handleRegister = () => {
@@ -38,20 +41,27 @@ const UserRegistration = () => {
     }
 
     const partialId = Math.floor(100000 + Math.random() * 900000).toString();
-    const newUser = { id, name: trimmedName, address: trimmedAddress, partialId };
-    const updated = [...users, newUser];
 
-    localStorage.setItem('users', JSON.stringify(updated));
-    setUsers(updated);
+    const newUser = {
+      id,
+      accountNumber: null,  // No account number in basic registration
+      partialId,
+      name: trimmedName,
+      address: trimmedAddress,
+    };
 
-    alert(`Registered as ${id}`);
+    const updatedUsers = [...users, newUser];
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    setUsers(updatedUsers);
+
+    alert(`User registered with ID: ${id}`);
     setName('');
     setAddress('');
   };
 
   return (
     <div className="p-8 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">End User Registration</h2>
+      <h2 className="text-xl font-bold mb-4">Basic User Registration</h2>
 
       <input
         className="w-full p-2 mb-2 border rounded"
@@ -71,22 +81,6 @@ const UserRegistration = () => {
       >
         Register
       </button>
-
-      {/* Display registered users */}
-      {/* <div className="mt-6">
-        <h3 className="font-semibold mb-2">Registered Users</h3>
-        {users.length === 0 ? (
-          <p className="text-gray-500">No users registered yet.</p>
-        ) : (
-          <ul className="list-disc list-inside max-h-40 overflow-auto border p-2 rounded bg-gray-50">
-            {users.map((user) => (
-              <li key={user.id}>
-                <strong>{user.id}</strong>: {user.name} — {user.address}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div> */}
     </div>
   );
 };

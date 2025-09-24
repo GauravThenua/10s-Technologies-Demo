@@ -36,7 +36,7 @@ export default function DBSearch() {
   return (
     <div className="max-w-md mx-auto bg-white border border-gray-300 shadow-md rounded-xl p-6 mt-10 text-sm font-medium">
       <h2 className="text-center text-pink-600 text-lg font-bold mb-4">
-        IDP Search
+        Identity Provider Database Search
       </h2>
 
       <label className="block mb-2">Enter Complete ID</label>

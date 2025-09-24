@@ -118,7 +118,7 @@ const AdminPortal = () => {
   return (
     <div className="p-6 rounded-md shadow-md border max-w-md mx-auto bg-white relative">
       <h2 className="w-full text-center text-pink-600 font-bold text-lg mb-4">
-        IDP Portal
+        Identity Provider Portal
       </h2>
 
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}

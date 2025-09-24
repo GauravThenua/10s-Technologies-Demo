@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 const AdvanceUserRegistration = () => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
-  const [users, setUsers] = useState(JSON.parse(localStorage.getItem('users')) || []);
+  const [users, setUsers] = useState(
+    JSON.parse(localStorage.getItem('users')) || []
+  );
 
   useEffect(() => {
-    document.title = "End User Registration";
+    document.title = "Advanced User Registration";
   }, []);
 
   const handleRegister = () => {
@@ -19,15 +21,14 @@ const AdvanceUserRegistration = () => {
     }
 
     // Check if user already exists
-    const existingIndex = users.findIndex(
+    const existingUser = users.find(
       (u) =>
         u.name.toLowerCase() === trimmedName.toLowerCase() &&
         u.address.toLowerCase() === trimmedAddress.toLowerCase()
     );
 
-    if (existingIndex !== -1) {
-      const existingUserId = `User${existingIndex + 1}`;
-      alert(`User already registered with User ID: ${existingUserId}`);
+    if (existingUser) {
+      alert(`User already registered with ID: ${existingUser.id}`);
       return;
     }
 
@@ -37,10 +38,17 @@ const AdvanceUserRegistration = () => {
       accountNumber = Math.floor(100000000000 + Math.random() * 900000000000).toString();
     } while (users.find((u) => u.accountNumber === accountNumber));
 
-    // Generate partial identifier (6-digit)
+    // Generate unique ID
+    let id = `User${users.length + 1}`;
+    while (users.find((u) => u.id === id)) {
+      const lastNum = parseInt(id.replace('User', ''));
+      id = `User${lastNum + 1}`;
+    }
+
     const partialId = Math.floor(100000 + Math.random() * 900000).toString();
 
     const newUser = {
+      id,
       accountNumber,
       partialId,
       name: trimmedName,
@@ -51,15 +59,14 @@ const AdvanceUserRegistration = () => {
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     setUsers(updatedUsers);
 
-    const newUserId = `User${updatedUsers.length}`;
-    alert(`User registered: ${newUserId}`);
+    alert(`User registered with ID: ${id}`);
     setName('');
     setAddress('');
   };
 
   return (
     <div className="p-8 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">User Registration</h2>
+      <h2 className="text-xl font-bold mb-4">Advanced User Registration</h2>
 
       <input
         className="w-full p-2 mb-2 border rounded"
@@ -79,27 +86,6 @@ const AdvanceUserRegistration = () => {
       >
         Register
       </button>
-
-      {/* Display registered users */}
-      {/* <div className="mt-6">
-        <h3 className="font-semibold mb-2">Registered Users</h3>
-        {users.length === 0 ? (
-          <p className="text-gray-500">No users registered yet.</p>
-        ) : (
-          <ul className="list-disc list-inside max-h-40 overflow-auto border p-2 rounded bg-gray-50 text-sm">
-            {users.map((user, index) => (
-              <li key={index}>
-                <strong>User ID:</strong> User{index + 1} <br />
-                <strong>Account #:</strong> {user.accountNumber} <br />
-                <strong>Partial ID:</strong> {user.partialId} <br />
-                <strong>Name:</strong> {user.name} <br />
-                <strong>Address:</strong> {user.address}
-                <hr className="my-2" />
-              </li>
-            ))}
-          </ul>
-        )}
-      </div> */}
     </div>
   );
 };

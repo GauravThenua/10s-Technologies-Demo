@@ -6,9 +6,9 @@ export default function Home() {
 
   const links = [
     { to: `${pathname}/register`, label: "End User Registration" },
-    { to: `${pathname}/auth-id`, label: "User Auth - ID" },
-    { to: `${pathname}/rp1`, label: "User Auth – RP1" },
-    { to: `${pathname}/rp2`, label: "User Auth – RP2" },
+    { to: `${pathname}/auth-id`, label: "User ID Card" },
+    { to: `${pathname}/rp1`, label: "User Transaction - RP1" },
+    { to: `${pathname}/rp2`, label: "User Transaction - RP2" },
   ];
 
   if (isAdvanced) {
