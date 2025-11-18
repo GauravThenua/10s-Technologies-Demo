@@ -14,7 +14,7 @@ import AdvanceUserRegistration from "./pages/AdvanceUserRegistration";
 import AdvanceUserAuthID from "./pages/AdvanceUserAuthID";
 import AdvanceRP1 from "./pages/AdvanceRP1";
 import AdvanceRP2 from "./pages/AdvanceRP2";
-import DBSearch from "./pages/DBsearch";
+import DBSearch from "./pages/DBSearch";
 import Users from "./components/Users";
 import GovtID from "./pages/GovtID";
 import OnlineAuth from "./pages/OnlineAuth";
