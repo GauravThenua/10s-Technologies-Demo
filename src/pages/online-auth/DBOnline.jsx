@@ -53,7 +53,7 @@ export default function DBSearch() {
         Identity Provider Database Search
       </h2>
 
-      <label className="block mb-2">Enter Complete ID</label>
+      <label className="block mb-2">Enter Complete Username</label>
       <div className="relative w-full mb-4">
         <div
           className="absolute inset-0 p-2 border border-gray-400 rounded whitespace-pre overflow-hidden"
@@ -75,9 +75,9 @@ export default function DBSearch() {
       {[
         { label: "RP Name", key: "rpName" },
         { label: "RP Identity No.", key: "rpId" },
-        { label: "End User Partial ID", key: "partialId" },
-        { label: "End User Expiry", key: "expiry" },
-        { label: "End User Name", key: "userName" },
+        { label: "End User Partial Username", key: "partialId" },
+        { label: "End User Password", key: "expiry" },
+        { label: "End User First Name", key: "userName" },
       ].map(({ label, key }) => (
         <div key={key} className="mb-4">
           <label className="block mb-1">{label}</label>

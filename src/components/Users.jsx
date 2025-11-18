@@ -1,15 +1,15 @@
-
 import React, { useEffect, useState } from "react";
 
 export default function Users() {
   const [idpData, setIdpData] = useState([]);
   const [users, setUsers] = useState([]);
 
+  // Load data from localStorage
   useEffect(() => {
     const storedIdpData = JSON.parse(localStorage.getItem("idpData")) || [];
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Clean data: keep only valid user objects
+    // Clean users: keep only valid objects
     const cleanedUsers = storedUsers.filter(
       (u) => u.id && u.partialId && u.name && u.address
     );
@@ -18,6 +18,7 @@ export default function Users() {
     setUsers(cleanedUsers);
   }, []);
 
+  // Save to localStorage whenever data changes
   useEffect(() => {
     localStorage.setItem("idpData", JSON.stringify(idpData));
   }, [idpData]);
@@ -26,11 +27,21 @@ export default function Users() {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
 
-  const handleDelete = (id) => {
-    const updated = users.filter((user) => user.id !== id);
-    setUsers(updated);
+  // ✅ Improved delete handler — deletes only clicked row or identical duplicates
+  const handleDelete = (itemToDelete, type) => {
+    const compareObjects = (a, b) =>
+      Object.keys(a).every((key) => a[key] === b[key]);
+
+    if (type === "users") {
+      const updatedUsers = users.filter((user) => !compareObjects(user, itemToDelete));
+      setUsers(updatedUsers);
+    } else if (type === "idpData") {
+      const updatedIdpData = idpData.filter((item) => !compareObjects(item, itemToDelete));
+      setIdpData(updatedIdpData);
+    }
   };
 
+  // Table renderer
   const renderTable = (data, type) => {
     if (data.length === 0) {
       return <p className="text-gray-500">No {type} available.</p>;
@@ -59,7 +70,7 @@ export default function Users() {
           <tbody>
             {data.map((item) => (
               <tr
-                key={item.id}
+                key={item.id || Math.random()}
                 className="hover:bg-gray-50 transition-colors border-b last:border-none"
               >
                 {keys.map((key) => (
@@ -69,7 +80,7 @@ export default function Users() {
                 ))}
                 <td className="px-4 py-2 text-right">
                   <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(item, type)} // ✅ pass entire item, not just id
                     className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition"
                   >
                     Delete
@@ -85,11 +96,13 @@ export default function Users() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 space-y-8">
+      {/* Users Table */}
       <div className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-xl font-bold text-gray-800 mb-4">Users Data</h1>
         {renderTable(users, "users")}
       </div>
 
+      {/* IDP Data Table */}
       <div className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-xl font-bold text-gray-800 mb-4">IDP Data</h1>
         {renderTable(idpData, "idpData")}

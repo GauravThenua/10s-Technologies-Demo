@@ -13,7 +13,6 @@ const AdminPortal = () => {
   const [fetched, setFetched] = useState(false);
   const [error, setError] = useState("");
 
-  // Reset handler
   const resetData = () => {
     setUserDetails({ partialId: "", expiry: "", completeId: "", userName: "" });
     setRpName("");
@@ -26,7 +25,6 @@ const AdminPortal = () => {
     document.title = "Admin Portal";
   }, []);
 
-  // Listen for Ctrl + R or Cmd + R to reset
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "r") {
@@ -38,7 +36,13 @@ const AdminPortal = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Handle Paste (JSON from UserAuthID)
+  // Extract only alphabetic username from ID
+  const extractNameFromId = (id) => {
+    if (!id) return "";
+    const match = id.match(/^[A-Za-z]+/);
+    return match ? match[0].trim().toLowerCase() : "";
+  };
+
   const handlePaste = async (e) => {
     e.preventDefault();
     try {
@@ -48,7 +52,7 @@ const AdminPortal = () => {
       if (parsed.id && parsed.expiry) {
         setUserDetails((prev) => ({
           ...prev,
-          partialId: parsed.id.toString().slice(0, 12) + "****",
+          partialId: parsed.id,
           expiry: parsed.expiry,
         }));
       }
@@ -67,18 +71,32 @@ const AdminPortal = () => {
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
     if (!users.length) {
-      alert("No users found.");
+      setError("No users found in database.");
       return;
     }
 
-    const matchedUser = users.find(
-      (u) =>
-        u.partialId === userDetails.partialId.slice(0, 6) &&
-        u.expiry === userDetails.expiry
-    );
+    // Extract name from pasted ID
+    const extractedName = extractNameFromId(userDetails.partialId);
+
+    if (!extractedName) {
+      setError("Could not extract username from ID.");
+      return;
+    }
+
+    // Normalize expiry: remove "/"
+    const inputExpiry = userDetails.expiry.replace(/\//g, "").trim();
+
+    // Find user ONLY BY NAME + EXPIRY
+    const matchedUser = users.find((u) => {
+      const cleanExpiry = (u.expiry || "").replace(/\//g, "");
+      return (
+        u.name.toLowerCase() === extractedName &&
+        cleanExpiry === inputExpiry
+      );
+    });
 
     if (!matchedUser) {
-      setError("No matching user found for given Partial ID and Expiry.");
+      setError("Authentication Failed. Username or password incorrect.");
       return;
     }
 
@@ -97,7 +115,6 @@ const AdminPortal = () => {
     localStorage.setItem("idpData", JSON.stringify([...stored, userData]));
   };
 
-  // Function to color ID digits
   const getColoredId = (id) => {
     if (!id) return null;
     const first = id.slice(0, 6);
@@ -140,25 +157,18 @@ const AdminPortal = () => {
 
       <hr className="border-dotted border-t-2 border-gray-400 mb-4" />
 
-      {/* End User Partial ID */}
+      {/* End User Partial Username (full JSON id pasted here) */}
       <div className="mb-2 relative">
-        <label>End User Partial ID</label>
+        <label>End User Partial Username</label>
         <div className="relative">
           <input
             className="w-full p-2 border border-gray-400 rounded text-transparent caret-black placeholder-gray-400"
-            style={{
-              backgroundColor: "white",
-              textShadow: userDetails.partialId ? "0 0 0 0" : "none",
-            }}
             value={userDetails.partialId}
             onChange={(e) =>
-              setUserDetails((prev) => ({
-                ...prev,
-                partialId: e.target.value,
-              }))
+              setUserDetails((prev) => ({ ...prev, partialId: e.target.value }))
             }
             onPaste={handlePaste}
-            placeholder="Enter Partial ID"
+            placeholder="End User Partial Username"
           />
           <div className="absolute inset-0 flex items-center p-2 pointer-events-none overflow-hidden">
             {getColoredId(userDetails.partialId)}
@@ -166,9 +176,9 @@ const AdminPortal = () => {
         </div>
       </div>
 
-      {/* End User Expiry */}
+      {/* Password */}
       <div className="mb-2">
-        <label>End User Expiry</label>
+        <label>End User Password</label>
         <input
           className="w-full p-2 border border-gray-400 rounded"
           value={userDetails.expiry}
@@ -178,7 +188,7 @@ const AdminPortal = () => {
         />
       </div>
 
-      {/* Paste Button */}
+      {/* Paste button */}
       <div className="absolute top-[44%] right-[25px]">
         <button
           onClick={handlePaste}
@@ -189,24 +199,15 @@ const AdminPortal = () => {
         </button>
       </div>
 
-      {/* End User Complete ID */}
+      {/* End User Complete Username */}
       <div className="mb-2 relative">
-        <label>End User Complete ID</label>
+        <label>End User Complete Username</label>
         <div className="relative">
           <input
             className="w-full p-2 border border-gray-400 rounded text-transparent caret-black placeholder-gray-400"
-            style={{
-              backgroundColor: "white",
-              textShadow: userDetails.completeId ? "0 0 0 0" : "none",
-            }}
             value={userDetails.completeId}
-            onChange={(e) =>
-              setUserDetails((prev) => ({
-                ...prev,
-                completeId: e.target.value,
-              }))
-            }
-            placeholder="Complete ID"
+            placeholder="Complete Username"
+            readOnly
           />
           <div className="absolute inset-0 flex items-center p-2 pointer-events-none overflow-hidden">
             {getColoredId(userDetails.completeId)}

@@ -10,26 +10,44 @@ const AdvanceRP2 = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Relying Party 2";
+    document.title = "Relying Party 1";
   }, []);
 
-  // Validate credentials
+  // Extract name (only alphabet part)
+  const extractUsername = (text) => {
+    if (!text) return "";
+    const match = text.match(/^[A-Za-z\s]+/);
+    return match ? match[0].trim() : "";
+  };
+
+  // ----------------------------
+  // UPDATED AUTH LOGIC
+  // ----------------------------
   const handleSubmit = () => {
     setError("");
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
+    if (!users.length) {
+      setError("No registered users found.");
+      toast.error("No users found!", { position: "top-center" });
+      return;
+    }
 
-    const matchedUser = users.find(
-      (u) =>
-        u.name.toLowerCase() === input.name.trim().toLowerCase() &&
-        input.id.trim().startsWith(u.partialId) && // ✅ match only first 6 digits
-        u.expiry === input.expiry.trim()
-    );
+    // 1️⃣ Extract name from ID field (from pasted JSON)
+    const extractedName = extractUsername(input.id).toLowerCase();
 
+    // 2️⃣ Compare this extractedName with database user.name (case-insensitive)
+    const matchedUser = users.find((u) => {
+      const dbName = (u.name || "").trim().toLowerCase();
+      const expiryEntered = input.expiry.replace(/\//g, "").trim();
+      const expiryDB = (u.expiry || "").replace(/\//g, "").trim();
+
+      return dbName === extractedName && expiryEntered === expiryDB;
+    });
+
+    // 3️⃣ If not found → authentication failed
     if (!matchedUser) {
-      setError(
-        "Invalid credentials. Please enter correct Name, ID, and Expiry."
-      );
+      setError("Authentication Failed! Name or Expiry does not match.");
       toast.error("Authentication Failed!", { position: "top-center" });
       return;
     }
@@ -37,6 +55,7 @@ const AdvanceRP2 = () => {
     toast.success("Please Reach Out To IDP For Complete ID", {
       position: "top-center",
     });
+
     setSubmitted(true);
 
     const id = setTimeout(() => {
@@ -45,7 +64,6 @@ const AdvanceRP2 = () => {
     setTimerId(id);
   };
 
-  // Reset data
   const reset = () => {
     setInput({ name: "", id: "", expiry: "" });
     setSubmitted(false);
@@ -53,10 +71,10 @@ const AdvanceRP2 = () => {
     if (timerId) clearTimeout(timerId);
   };
 
-  // Keyboard shortcut Ctrl+R / Cmd+R
+  // Ctrl+R / Cmd+R reset
   useEffect(() => {
     const handleKeyDown = (e) => {
-      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const isMac = navigator.platform.toUpperCase().includes("MAC");
       const isRefresh =
         (isMac && e.metaKey && e.key.toLowerCase() === "r") ||
         (!isMac && e.ctrlKey && e.key.toLowerCase() === "r");
@@ -71,18 +89,19 @@ const AdvanceRP2 = () => {
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [timerId]);
 
-  // Paste function
+  // PASTE JSON (Now also reads name)
   const handlePaste = async (e) => {
     e.preventDefault();
     try {
       const text = await navigator.clipboard.readText();
       const parsed = JSON.parse(text);
 
-      if (parsed.id && parsed.expiry) {
+      if (parsed.id || parsed.expiry || parsed.name) {
         setInput((prev) => ({
           ...prev,
-          id: parsed.id,
-          expiry: parsed.expiry,
+          id: parsed.id || prev.id,
+          expiry: parsed.expiry || prev.expiry,
+          name: parsed.name || prev.name,
         }));
       }
     } catch (err) {
@@ -90,7 +109,7 @@ const AdvanceRP2 = () => {
     }
   };
 
-  // Function to color ID digits
+  // Color ID digits visually
   const getColoredId = (id) => {
     const first = id.slice(0, 6);
     const middle = id.slice(6, 12);
@@ -112,30 +131,21 @@ const AdvanceRP2 = () => {
 
       {!submitted ? (
         <>
-          <input
-            className="w-[80%] p-2 mb-2 border"
-            placeholder="Name"
-            value={input.name}
-            onChange={(e) => setInput({ ...input, name: e.target.value })}
-          />
-
-          {/* ID field with color logic */}
+          {/* ID field */}
           <div className="relative w-[80%] mb-2">
-            <div className=" border relative">
-              {/* Transparent input with placeholder visible when empty */}
+            <div className="border relative">
               <input
                 className="w-full p-2 border pr-10 text-transparent caret-black placeholder-gray-400"
                 style={{
                   background: "transparent",
                   textShadow: input.id ? "0 0 0 0" : "none",
                 }}
-                placeholder="ID"
+                placeholder="Username"
                 value={input.id}
                 onChange={(e) => setInput({ ...input, id: e.target.value })}
                 onPaste={handlePaste}
               />
 
-              {/* Colored text overlay */}
               <div className="absolute inset-0 flex items-center p-2 pr-10 pointer-events-none overflow-hidden">
                 {getColoredId(input.id)}
               </div>
@@ -150,15 +160,16 @@ const AdvanceRP2 = () => {
             </button>
           </div>
 
+          {/* Password / Expiry */}
           <input
             className="w-[80%] p-2 mb-2 border"
-            placeholder="Expiry"
+            placeholder="Password"
             value={input.expiry}
             onChange={(e) => setInput({ ...input, expiry: e.target.value })}
             onPaste={handlePaste}
           />
 
-          <div className="absolute ">
+          <div className="absolute">
             <button
               className="bg-blue-600 text-white px-4 py-2 rounded"
               onClick={handleSubmit}
@@ -177,11 +188,11 @@ const AdvanceRP2 = () => {
               <span className="text-gray-900">{input.name || "-"}</span>
             </div>
             <div>
-              <span className="font-semibold text-gray-700">ID:</span>{" "}
+              <span className="font-semibold text-gray-700">Username:</span>{" "}
               <span className="text-gray-900">{input.id || "-"}</span>
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Expiry:</span>{" "}
+              <span className="font-semibold text-gray-700">Password:</span>{" "}
               <span className="text-gray-900">{input.expiry || "-"}</span>
             </div>
           </div>
